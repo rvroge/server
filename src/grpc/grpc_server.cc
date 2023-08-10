@@ -1341,7 +1341,9 @@ CommonHandler::RegisterTrace()
                 err = TRITONSERVER_ErrorNew(
                     TRITONSERVER_ERROR_INVALID_ARG,
                     (std::string("Unable to parse '") + setting_name +
-                     "'. Expecting value >= -1, got: " + it->second.value()[0])
+                     "'. Expecting value >= " +
+                     std::to_string(TraceManager::MIN_TRACE_COUNT_VALUE) +
+                     ", got: " + it->second.value()[0])
                         .c_str());
                 GOTO_IF_ERR(err, earlyexit);
               }
@@ -1359,7 +1361,8 @@ CommonHandler::RegisterTrace()
               err = TRITONSERVER_ErrorNew(
                   TRITONSERVER_ERROR_INVALID_ARG,
                   (std::string("Unable to parse '") + setting_name +
-                   "', value is out of range [ -1, " +
+                   "', value is out of range [ " +
+                   std::to_string(TraceManager::MIN_TRACE_COUNT_VALUE) + ", " +
                    std::to_string(std::numeric_limits<std::int32_t>::max()) +
                    " ], got: " + it->second.value()[0])
                       .c_str());
