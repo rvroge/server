@@ -26,6 +26,7 @@
 
 import os
 import sys
+import gc
 import threading
 import unittest
 from multiprocessing import Pool
@@ -450,7 +451,7 @@ class PBBLSTest(unittest.TestCase):
 
             if index > 1:
                 self.assertEqual(
-                    free_memory, recorded_memory, "GPU memory lifecycle test failed."
+                    free_memory, recorded_memory, "GPU memory lifecycle test failed at index: " + str(index)
                 )
 
             input0 = torch.ones([1, input_size], dtype=torch.float32).to("cuda")
@@ -482,6 +483,9 @@ class PBBLSTest(unittest.TestCase):
                 torch.all(output0_pytorch == input0),
                 f"input ({input0}) and output ({output0_pytorch}) didn't match for identity model.",
             )
+
+            collected = gc.collect()
+            print("=== Garbage collector: collected %d objects." % (collected), flush=True)
 
     def _test_gpu_bls_add_sub(self, is_input0_gpu, is_input1_gpu, is_decoupled=False):
         input0 = torch.rand(16)
